@@ -56,6 +56,15 @@
 
         <li>
 
+            <a class="apidocElementLiA" href="#apidoc.element.duplexify.duplexify">
+            function <span class="apidocSignatureSpan"></span>duplexify
+            <span class="apidocSignatureSpan">(writable, readable, opts)</span>
+            </a>
+
+        </li>
+
+        <li>
+
             <a class="apidocElementLiA" href="#apidoc.element.duplexify.obj">
             function <span class="apidocSignatureSpan">duplexify.</span>obj
             <span class="apidocSignatureSpan">(writable, readable, opts)</span>
@@ -526,6 +535,41 @@
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.duplexify" id="apidoc.module.duplexify">module duplexify</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.duplexify.duplexify" id="apidoc.element.duplexify.duplexify">
+        function <span class="apidocSignatureSpan"></span>duplexify
+        <span class="apidocSignatureSpan">(writable, readable, opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">duplexify = function (writable, readable, opts) {
+  if (!(this instanceof Duplexify)) return new Duplexify(writable, readable, opts)
+  stream.Duplex.call(this, opts)
+
+  this._writable = null
+  this._readable = null
+  this._readable2 = null
+
+  this._forwardDestroy = !opts || opts.destroy !== false
+  this._forwardEnd = !opts || opts.end !== false
+  this._corked = 1 // start corked
+  this._ondrain = null
+  this._drained = false
+  this._forwarding = false
+  this._unwrite = null
+  this._unread = null
+  this._ended = false
+
+  this.destroyed = false
+
+  if (writable) this.setWritable(writable)
+  if (readable) this.setReadable(readable)
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 
     <h2>
@@ -2151,10 +2195,9 @@ var onreadable = function() {
   }
 
   // proxy certain important events.
-  var events = ['error', 'close', 'destroy', 'pause', 'resume'];
-  forEach(events, function (ev) {
-    stream.on(ev, self.emit.bind(self, ev));
-  });
+  for (var n = 0; n &lt; kProxyEvents.length; n++) {
+    stream.on(kProxyEvents[n], self.emit.bind(self, kProxyEvents[n]));
+  }
 
   // when we try to consume some more bytes, simply unpause the
   // underlying stream.
